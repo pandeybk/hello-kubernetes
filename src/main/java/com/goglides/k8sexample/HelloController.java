@@ -15,12 +15,37 @@ import io.kubernetes.client.util.KubeConfig;
 import java.io.FileReader;
 import java.io.IOException;
 
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClient;
+import io.fabric8.kubernetes.api.model.NamespaceList;
+import io.fabric8.kubernetes.client.Config;
+import io.fabric8.kubernetes.client.ConfigBuilder;
+
 
 @RestController
 public class HelloController {
-
   @RequestMapping("/")
   public String index() {
+    Boolean kubeconfig=true;
+    KubernetesClient client;
+
+    if (kubeconfig) {
+      Config config = new ConfigBuilder()
+      .withMasterUrl("https://35.202.190.3")
+      .build();
+       client = new DefaultKubernetesClient(config);             
+  } else {
+     client = new DefaultKubernetesClient();
+  }
+    
+    NamespaceList myNs = client.namespaces().list();
+    System.out.println(myNs);
+    return "Greetings from Spring Boot!";
+  }
+  
+
+  @RequestMapping("/")
+  public String index2() {
     // file path to your KubeConfig
     String kubeConfigPath = "/Users/bkpandey/.kube/config";
 
